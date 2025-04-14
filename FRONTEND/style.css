@@ -31,3 +31,12 @@ input {
     border-radius: 10px;
     background-color: #40e667;
 }
+
+#sumbit-button:hover {
+    background-color: #10e14b44;
+    cursor: pointer;
+}
+
+#submit-button:active {
+    background-color: #1f883d;
+}
