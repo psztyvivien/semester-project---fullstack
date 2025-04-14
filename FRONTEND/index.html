@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Csekkbefizetés</title>
+</head>
+<body>
+    <form action="/sumbit" method="post">
+        <label for="name">Befizető neve:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <br>
+        <label for="amount-number">Befizetett összeg (számmal):</label>
+        <input type="number" id="amount-number" name="amount-number" required>
+        <br>
+        <br>
+        <label for="amount-text">Befizetett összeg (szöveggel):</label>
+        <input type="text" id="amount-text" name="amount-text" required>
+        <br>
+        <br>
+        <label for="date">Befizetés dátuma:</label>
+        <input type="date" id="date" name="date" required>
+    </form>
+    <br>
+    <button id="submit">Befizetés</button>
+    <div id="result">
+        
+    </div>
+
+    </div>
+</body>
+</html>
