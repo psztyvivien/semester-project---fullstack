@@ -108,7 +108,7 @@ function createBill(){
     let payername = document.querySelector('#create-payername').value
     let amountnum = document.querySelector('#create-amount-num').value
     let amounttext = document.querySelector('#create-amount-txt').value
-    let billdate = document.querySelector('#create-date').value
+    let billdate = document.querySelector('#create-bill-date').value
 
     fetch('http://localhost:5500/billapi', {
         method: 'POST',
@@ -132,6 +132,41 @@ function createBill(){
         console.error('Error: ', err)
     })
 }
+
+function updateBill(){
+    let billid = document.querySelector('#bill-id').value
+    let payername = document.querySelector('#payername').value
+    let amountnum = document.querySelector('#amount-num').value
+    let amounttext = document.querySelector('#amount-txt').value
+    let billdate = document.querySelector('#bill-date').value
+
+    fetch('http://localhost:5500/billapi/' + billid, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: billid,
+            name: payername,
+            amountNumber: amountnum,
+            amountText: amounttext,
+            date: billdate
+        })
+    })
+    .then(resp => {
+        console.log('Response: ', resp)
+        if (resp.status === 200) {
+            downloadAndDisplay()
+        }
+    })
+    .catch(err => {
+        console.error('Error: ', err)
+    })
+}
+
+downloadAndDisplay()
+
+
 
 
 // Egyszerű szövegből számra konvertáló (magyar)
