@@ -88,6 +88,14 @@ function deleteLog(event) {
 }
 
 
+function reset(){
+    document.querySelector('#bill-id').value = ''
+    document.querySelector('#payername').value = ''
+    document.querySelector('#amount-num').value = ''
+    document.querySelector('#amount-text').value = ''
+    document.querySelector('#bill-date').value = ''
+}
+
 
 // Egyszerű szövegből számra konvertáló (magyar)
 function convertTextToNumber(text) {
