@@ -96,6 +96,14 @@ function reset(){
     document.querySelector('#bill-date').value = ''
 }
 
+function addTemp(){
+    document.querySelector('#bill-id').value = '3'
+    document.querySelector('#payername').value = 'Test Payer'
+    document.querySelector('#amount-num').value = '12000'
+    document.querySelector('#amount-text').value = 'tizenkettő ezer'
+    document.querySelector('#bill-date').value = '2023-10-01'
+}
+
 
 // Egyszerű szövegből számra konvertáló (magyar)
 function convertTextToNumber(text) {
