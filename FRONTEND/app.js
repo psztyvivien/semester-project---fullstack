@@ -56,6 +56,20 @@ async function donwloadAndDisplay(){
 }
 
 
+function updateLog(event) {
+    console.log(event.target.idParameter)
+
+    let toUpdate = payments.find(x => x.id === event.target.idParameter)
+
+    document.querySelector('#bill-id').value = toUpdate.id
+    document.querySelector('#payername').value = toUpdate.name
+    document.querySelector('#amount-num').value = toUpdate.amountNumber
+    document.querySelector('#amount-text').value = toUpdate.amountText
+    document.querySelector('#bill-date').value = toUpdate.date
+
+}
+
+
 
 // Egyszerű szövegből számra konvertáló (magyar)
 function convertTextToNumber(text) {
