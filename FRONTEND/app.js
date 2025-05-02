@@ -104,6 +104,35 @@ function addTemp(){
     document.querySelector('#bill-date').value = '2023-10-01'
 }
 
+function createBill(){
+    let payername = document.querySelector('#create-payername').value
+    let amountnum = document.querySelector('#create-amount-num').value
+    let amounttext = document.querySelector('#create-amount-txt').value
+    let billdate = document.querySelector('#create-date').value
+
+    fetch('http://localhost:5500/billapi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: payername,
+            amountNumber: amountnum,
+            amountText: amounttext,
+            date: billdate
+        })
+    })
+    .then(resp => {
+        console.log('Response: ', resp)
+        if (resp.status === 200) {
+            downloadAndDisplay()
+        }
+    })
+    .catch(err => {
+        console.error('Error: ', err)
+    })
+}
+
 
 // Egyszerű szövegből számra konvertáló (magyar)
 function convertTextToNumber(text) {
