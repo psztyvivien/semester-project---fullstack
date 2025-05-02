@@ -1,37 +1,51 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <title>Csekkbefizetés</title>
+    <title>Bill payment API</title>
 </head>
 <body>
-    <form id="payment-form">
-        <label for="name">Befizető neve:</label>
-        <input type="text" id="name" name="name" required placeholder="pl. Beke Emma">
+    <h1>API client</h1>
+    <hr>
+    <div class="parent">
+        <div class="div1">
+            <input type="text" id="bill-id" disabled class="form-control mb-3" placeholder="Bill's id">
+            <input type="text" id="payername" class="form-control mb-3" placeholder="Payer's name">
+            <input type="num" id="amount-num" class="form-control mb-3" placeholder="Amount (with number)">
+            <input type="text" id="amount-txt" class="form-control mb-3" placeholder="Amount (with text)">
+            <input type="date" id="date" class="form-control mb-3">
+            <button onclick="updateBill()" class="btn btn-sm btn-primary">Update</button>
+            <button onclick="reset()" class="btn btn-sm btn-primary">Reset</button>
+        </div>
         <br>
-        <br>
-        <label for="amount-number" min="0">Befizetett összeg (számmal):</label>
-        <input type="number" id="amount-number" name="amount-number" required placeholder="pl. 2000"> HUF
-        <br>
-        <br>
-        <label for="amount-text">Befizetett összeg (szöveggel):</label>
-        <input type="text" id="amount-text" name="amount-text" required placeholder="pl. kétezer"> HUF
-        <br>
-        <br>
-        <label for="date">Befizetés dátuma:</label>
-        <input type="date" id="date" name="date" required>
-        <br>
-        <br>
-        <button id="submit-button">Befizetés</button>
-    </form>
-    <br>
-    <br>
-    <div id="result">
-
+        <div class="div2">
+            <input type="text" id="create-bill-id" disabled class="form-control mb-3" placeholder="Bill's id">
+            <input type="text" id="create-payername" class="form-control mb-3" placeholder="Payer's name">
+            <input type="number" id="create-amount-num" class="form-control mb-3" placeholder="Amount (with number)">
+            <input type="number" id="create-amount-txt" class="form-control mb-3" placeholder="Amount (with text)">
+            <input type="date" id="create-date" class="form-control mb-3">
+            <button onclick="createBill()" class="btn btn-sm btn-success">Add</button>
+            <button onclick="addTemp()" class="btn btn-sm btn-secondary">Fill with temp</button>
+        </div>
     </div>
+    <hr>
+    <h3>Payments:</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Payer's name</th>
+                <th>Amount (with number)</th>
+                <th>Amount (with text)</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="bills"></tbody>
+    </table>
 
 
     <script src="app.js"></script>
