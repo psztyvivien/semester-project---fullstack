@@ -55,25 +55,7 @@ async function donwloadAndDisplay(){
     })
 }
 
-document.getElementById('payment-form').addEventListener('submit', function (e) {
-    e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const amountNumber = parseInt(document.getElementById('amount-number').value.trim());
-    const amountText = document.getElementById('amount-text').value.trim().toLowerCase();
-    const date = document.getElementById('date').value;
-
-    const converted = convertTextToNumber(amountText);
-
-    if (amountNumber !== converted) {
-        document.getElementById('result').innerHTML = `<p style="color:red;">Hibás tranzakció</p>`;
-        return;
-    }
-
-    const payment = { name, amountNumber, amountText, date };
-    payments.push(payment);
-    renderTable();
-});
 
 // Egyszerű szövegből számra konvertáló (magyar)
 function convertTextToNumber(text) {
