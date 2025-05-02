@@ -1,41 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 *{
-    font-family: "Montserrat";
+    font-family: 'Montserrat', sans-serif;
 }
 
-body {
-    padding: 50px;
+body{ 
+    margin: 30px;
+    padding: 10px; 
 }
 
-form {
-    margin: auto;
-    padding: 15px;
-    width: 50%;
-    border: 1px solid black;
-    border-radius: 5px;
+h1{
+    padding-top: 5px;
+    text-align: center;
 }
 
-input {
-    width: 70%;
-    height: 50%;
+.parent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
 }
 
-#submit-button {
-    display: block;            
-    margin: 0 auto;            
-    margin-top: 20px;      
-    width: 40%;             
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #40e667;
+.div1{ 
+    grid-area: 1 / 1 / 2 / 2; 
 }
 
-#sumbit-button:hover {
-    background-color: #10e14b44;
-    cursor: pointer;
+.div2{
+    grid-area: 1 / 2 / 2 / 3; 
 }
 
-#submit-button:active {
-    background-color: #1f883d;
+.div1, .div2{
+    padding: 10px;
 }
