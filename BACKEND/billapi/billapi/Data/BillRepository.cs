@@ -40,10 +40,5 @@ namespace billapi.Controllers
             Bill toDelete = this.Read(id);
             this.bills.Remove(toDelete);
         }
-
-        List<Bill> IBillRepository.Read()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
