@@ -69,6 +69,24 @@ function updateLog(event) {
 
 }
 
+function deleteLog(event) {
+    console.log(event.target.idParameter)
+
+    fetch('http://localhost:5500/billapi/' + event.target.idParameter, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: null
+    })
+    .then(resp => {
+        console.log('Response: ', resp)
+        if (resp.status === 200) {
+            downloadAndDisplay()
+        }
+    })
+}
+
 
 
 // Egyszerű szövegből számra konvertáló (magyar)
