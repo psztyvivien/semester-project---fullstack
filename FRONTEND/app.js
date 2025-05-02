@@ -92,7 +92,7 @@ function reset(){
     document.querySelector('#bill-id').value = ''
     document.querySelector('#payername').value = ''
     document.querySelector('#amount-num').value = ''
-    document.querySelector('#amount-text').value = ''
+    document.querySelector('#amount-txt').value = ''
     document.querySelector('#bill-date').value = ''
 }
 
@@ -100,7 +100,7 @@ function addTemp(){
     document.querySelector('#bill-id').value = '3'
     document.querySelector('#payername').value = 'Test Payer'
     document.querySelector('#amount-num').value = '12000'
-    document.querySelector('#amount-text').value = 'tizenkettő ezer'
+    document.querySelector('#amount-txt').value = 'tizenkettő ezer'
     document.querySelector('#bill-date').value = '2023-10-01'
 }
 
