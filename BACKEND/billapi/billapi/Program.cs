@@ -14,10 +14,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.UseCors(x => x
-    .AllowCredentials()
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .WithOrigins("http://127.0.0.1:5500/"));
+
+//SWAGGER
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+    app.UseCors(x => x
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("http://127.0.0.1:5500"));
+
 
 app.Run();
