@@ -14,44 +14,34 @@ namespace billapi.Controllers
         {
             this.repo = repo;
         }
-
         [HttpGet]
         public IEnumerable<Bill> GetBills()
         {
             return this.repo.Read();
         }
-
         [HttpGet("{id}")]
         public Bill? GetBill(int id)
         {
             return this.repo.Read(id);
         }
-
         [HttpPost]
         public ActionResult<Bill> CreateBill([FromBody] Bill bill)
         {
-            int parsedAmount = ParseHungarianNumberText(bill.AmountTxt);
+            int textAsNumber = ParseHungarianNumberText(bill.AmountTxt);
 
-            if (parsedAmount != bill.AmountNum)
+            if (textAsNumber != bill.AmountNum)
             {
-                return BadRequest("The numeric amount and text amount do not match.");
-            }
-
-            if (parsedAmount > 999999)
-            {
-                return BadRequest("Amount exceeds maximum value of 999 999.");
+                return BadRequest("The numeric amount and text amount do not match");
             }
 
             this.repo.Create(bill);
             return bill;
         }
-
         [HttpPut]
         public void EditBill([FromBody] Bill bill)
         {
             this.repo.Update(bill);
         }
-
         [HttpDelete("{id}")]
         public void DeleteBill(int id)
         {
@@ -62,140 +52,155 @@ namespace billapi.Controllers
         {
             hungarianText = hungarianText.ToLower().Trim();
 
-            var hungarianNumberDictionary = new Dictionary<string, int>
+            Dictionary<string, int> numbers = new Dictionary<string, int>
             {
-                { "nulla", 0 },
-                { "egy", 1 },
-                { "kettő", 2 },
-                { "két", 2 },
-                { "három", 3 },
-                { "négy", 4 },
-                { "öt", 5 },
-                { "hat", 6 },
-                { "hét", 7 },
-                { "nyolc", 8 },
-                { "kilenc", 9 },
-                { "tíz", 10 },
-                { "tizenegy", 11 },
-                { "tizenkettő", 12 },
-                { "tizenkét", 12 },
-                { "tizenhárom", 13 },
-                { "tizennégy", 14 },
-                { "tizenöt", 15 },
-                { "tizenhat", 16 },
-                { "tizenhét", 17 },
-                { "tizennyolc", 18 },
-                { "tizenkilenc", 19 },
-                { "húsz", 20 },
-                { "huszon", 20 },
-                { "harminc", 30 },
-                { "negyven", 40 },
-                { "ötven", 50 },
-                { "hatvan", 60 },
-                { "hetven", 70 },
-                { "nyolcvan", 80 },
-                { "kilencven", 90 },
-                { "száz", 100 },
-                { "ezer", 1000 },
-                { "millió", 1000000 }
+                {"nulla", 0},
+                {"egy", 1},
+                {"kettő", 2}, {"ketto", 2}, {"két", 2}, {"ket", 2},
+                {"három", 3}, {"harom", 3},
+                {"négy", 4}, {"negy", 4},
+                {"öt", 5}, {"ot", 5},
+                {"hat", 6},
+                {"hét", 7}, {"het", 7},
+                {"nyolc", 8},
+                {"kilenc", 9},
+                {"tíz", 10}, {"tiz", 10},
+                {"tizenegy", 11},
+                {"tizenkettő", 12}, {"tizenketto", 12}, {"tizenkét", 12}, {"tizenket", 12},
+                {"tizenhárom", 13}, {"tizenharom", 13},
+                {"tizennégy", 14}, {"tizennegy", 14},
+                {"tizenöt", 15}, {"tizenot", 15},
+                {"tizenhat", 16},
+                {"tizenhét", 17}, {"tizenhet", 17},
+                {"tizennyolc", 18},
+                {"tizenkilenc", 19},
+                {"húsz", 20}, {"husz", 20},
+                {"harminc", 30},
+                {"negyven", 40},
+                {"ötven", 50}, {"otven", 50},
+                {"hatvan", 60},
+                {"hetven", 70},
+                {"nyolcvan", 80},
+                {"kilencven", 90},
+                {"száz", 100}, {"szaz", 100},
+                {"ezer", 1000},
+                {"millió", 1000000}, {"millio", 1000000}
             };
 
-            if (hungarianNumberDictionary.ContainsKey(hungarianText))
+            if (numbers.ContainsKey(hungarianText))
             {
-                return hungarianNumberDictionary[hungarianText];
+                return numbers[hungarianText];
             }
 
             int result = 0;
             int currentNumber = 0;
 
-            // Handle common suffixes and prefixes
-            hungarianText = hungarianText.Replace("ezerkétszáz", "1200");
-            hungarianText = hungarianText.Replace("ezerötszáz", "1500");
-
-            // Handle special case like "izenkét" -> "tizenkét"
-            hungarianText = Regex.Replace(hungarianText, @"\bizen", "tizen");
-
-            // Process each word
-            string[] words = hungarianText.Split(new[] { ' ', '-' }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string word in words)
+            if (hungarianText.Contains("ezer"))
             {
-                if (word == "ezer")
-                {
-                    if (currentNumber == 0)
-                        currentNumber = 1;
+                string[] parts = hungarianText.Split(new[] { "ezer" }, StringSplitOptions.None);
 
-                    result += currentNumber * 1000;
-                    currentNumber = 0;
-                    continue;
+                if (parts[0].Trim() == "")
+                {
+                    currentNumber = 1;
+                }
+                else
+                {
+                    currentNumber = ParseSubHungarianNumber(parts[0], numbers);
                 }
 
-                if (word == "száz")
-                {
-                    if (currentNumber == 0)
-                        currentNumber = 1;
+                result += currentNumber * 1000;
 
-                    currentNumber *= 100;
-                    continue;
+                if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
+                {
+                    result += ParseSubHungarianNumber(parts[1], numbers);
+                }
+            }
+            else
+            {
+                result = ParseSubHungarianNumber(hungarianText, numbers);
+            }
+
+            if (result > 999999)
+            {
+                throw new ArgumentException("Number exceeds maximum value of 999 999");
+            }
+
+            return result;
+        }
+
+        private int ParseSubHungarianNumber(string text, Dictionary<string, int> numbers)
+        {
+            text = text.Trim();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0;
+            }
+
+            if (numbers.ContainsKey(text))
+            {
+                return numbers[text];
+            }
+
+            int result = 0;
+
+            if (text.Contains("száz") || text.Contains("szaz"))
+            {
+                string[] parts = Regex.Split(text, "száz|szaz");
+
+                if (parts[0].Trim() == "")
+                {
+                    result += 100;
+                }
+                else
+                {
+                    result += numbers[parts[0].Trim()] * 100;
                 }
 
-                // Check if the word itself is a number
-                if (hungarianNumberDictionary.ContainsKey(word))
+                if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
                 {
-                    currentNumber += hungarianNumberDictionary[word];
-                    continue;
+                    result += ParseTensAndOnes(parts[1], numbers);
                 }
+            }
+            else
+            {
+                result += ParseTensAndOnes(text, numbers);
+            }
 
-                // Check for compound words
-                if (word.EndsWith("száz"))
+            return result;
+        }
+
+        private int ParseTensAndOnes(string text, Dictionary<string, int> numbers)
+        {
+            text = text.Trim();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0;
+            }
+
+            if (numbers.ContainsKey(text))
+            {
+                return numbers[text];
+            }
+
+            foreach (var tensNumber in new[] { "kilencven", "nyolcvan", "hetven", "hatvan", "ötven", "otven", "negyven", "harminc", "húsz", "husz" })
+            {
+                if (text.StartsWith(tensNumber))
                 {
-                    string prefix = word.Substring(0, word.Length - 4);
-                    if (hungarianNumberDictionary.ContainsKey(prefix))
+                    int tensValue = numbers[tensNumber];
+                    string remaining = text.Substring(tensNumber.Length).Trim();
+
+                    if (string.IsNullOrEmpty(remaining))
                     {
-                        currentNumber += hungarianNumberDictionary[prefix] * 100;
+                        return tensValue;
                     }
-                    continue;
-                }
 
-                if (word.EndsWith("ezer"))
-                {
-                    string prefix = word.Substring(0, word.Length - 4);
-                    if (hungarianNumberDictionary.ContainsKey(prefix))
-                    {
-                        result += hungarianNumberDictionary[prefix] * 1000;
-                        currentNumber = 0;
-                    }
-                    continue;
-                }
-
-                // Try to find partial matches
-                foreach (var entry in hungarianNumberDictionary)
-                {
-                    if (word.Contains(entry.Key))
-                    {
-                        int index = word.IndexOf(entry.Key);
-                        string before = word.Substring(0, index);
-                        string after = word.Substring(index + entry.Key.Length);
-
-                        if (hungarianNumberDictionary.ContainsKey(before))
-                        {
-                            currentNumber += hungarianNumberDictionary[before];
-                        }
-
-                        currentNumber += entry.Value;
-
-                        if (hungarianNumberDictionary.ContainsKey(after))
-                        {
-                            currentNumber += hungarianNumberDictionary[after];
-                        }
-
-                        break;
-                    }
+                    return tensValue + numbers[remaining];
                 }
             }
 
-            result += currentNumber;
-            return result;
+            throw new ArgumentException($"Cannot parse Hungarian number text: {text}");
         }
     }
 }
