@@ -6,10 +6,10 @@ namespace billapi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BillApiController : ControllerBase
+    public class BillController : ControllerBase
     {
         IBillRepository repo;
-        public BillApiController(IBillRepository repo)
+        public BillController(IBillRepository repo)
         {
             this.repo = repo;
         }
