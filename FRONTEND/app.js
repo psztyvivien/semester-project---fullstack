@@ -146,6 +146,7 @@ function createBill(){
     })
     .catch(err => {
         console.error('Error: ', err)
+        alert('Hibás tranzakció!')
     })
 }
 
