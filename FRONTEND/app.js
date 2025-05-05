@@ -143,10 +143,13 @@ function createBill(){
         if (resp.status === 200) {
             downloadAndDisplay()
         }
+        if(resp.status === 400){
+            alert('Hibás tranzakció!')
+        }
     })
     .catch(err => {
-        console.error('Error: ', err)
-        alert('Hibás tranzakció!')
+        console.error('Error: r ', err)
+        alert('Sikertelen mentés!')
     })
 }
 
@@ -253,14 +256,3 @@ function magyarSzovegSzamra(szoveg) {
     return osszeg;
 }
 
-function checkAmount() {
-    const num = parseInt(document.getElementById('create-amount-num').value);
-    const txt = document.getElementById('create-amount-txt').value;
-    const parsed = magyarSzovegSzamra(txt);
-
-    if (num === parsed) {
-        alert("Az összegek egyeznek.");
-    } else {
-        alert(`Az összeg nem egyezik! Szöveg alapján: ${parsed}, számként megadva: ${num}`);
-    }
-}
