@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace billapi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")]     //URL: http://localhost:5121/bill
     public class BillController : ControllerBase
     {
         IBillRepository repo;
