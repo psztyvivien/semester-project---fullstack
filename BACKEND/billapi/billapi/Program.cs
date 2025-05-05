@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IBillRepository, BillRepository>();
 
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 app.UseRouting();
