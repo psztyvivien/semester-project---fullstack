@@ -4,13 +4,19 @@ async function downloadAndDisplay(){
     const response = await fetch('http://localhost:5121/bill')
     const bills = await response.json()
     console.log(bills)
-
     document.querySelector('#bills').innerHTML = ''
     payments = []
-
+    
+    // Find the most recent payment
+    let latestPayment = null;
+    bills.forEach(bill => {
+        if (!latestPayment || new Date(bill.date) > new Date(latestPayment.date)) {
+            latestPayment = bill;
+        }
+    });
+    
     bills.map(bill => {
         payments.push(bill)
-
         let tr = document.createElement('tr')
         let tdID = document.createElement('td')
         let tdName = document.createElement('td')
@@ -18,9 +24,15 @@ async function downloadAndDisplay(){
         let tdAmountText = document.createElement('td')
         let tdDate = document.createElement('td')
         let tdActions = document.createElement('td')
-
         tdID.innerHTML =  bill.id
-        tdName.innerHTML = bill.payerName
+        
+        // Add red badge to the latest payment's name
+        if (latestPayment && bill.id === latestPayment.id) {
+            tdName.innerHTML = `<span class="badge bg-danger">${bill.payerName}</span>`;
+        } else {
+            tdName.innerHTML = bill.payerName;
+        }
+        
         tdAmountNumber.innerHTML = bill.amountNum
         tdAmountText.innerHTML = bill.amountTxt
         tdDate.innerHTML = new Date(bill.date).toLocaleDateString('hu-HU', {
@@ -28,14 +40,12 @@ async function downloadAndDisplay(){
             month: 'long',
             day: 'numeric'
           });
-
         tr.appendChild(tdID)
         tr.appendChild(tdName)
         tr.appendChild(tdAmountNumber)
         tr.appendChild(tdAmountText)
         tr.appendChild(tdDate)
         tr.appendChild(tdActions)
-
         let btnUpdate = document.createElement('button')
         btnUpdate.classList.add('btn')
         btnUpdate.classList.add('btn-sm')
@@ -45,7 +55,6 @@ async function downloadAndDisplay(){
         btnUpdate.idParameter = bill.id
         btnUpdate.addEventListener('click', updateLog)
         tdActions.appendChild(btnUpdate)
-
         let btnDel = document.createElement('button')
         btnDel.classList.add('btn')
         btnDel.classList.add('btn-sm')
@@ -55,7 +64,6 @@ async function downloadAndDisplay(){
         btnDel.idParameter = bill.id
         btnDel.addEventListener('click', deleteLog)
         tdActions.appendChild(btnDel)
-
         document.querySelector('#bills').appendChild(tr)
     })
 }
@@ -78,7 +86,7 @@ function updateLog(event) {
 function deleteLog(event) {
     console.log(event.target.idParameter)
 
-    fetch('http://localhost:5121/bill' + event.target.idParameter, {
+    fetch('http://localhost:5121/bill/' + event.target.idParameter, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
