@@ -8,8 +8,8 @@ async function downloadAndDisplay(){
     document.querySelector('#bills').innerHTML = ''
     payments = []
 
-    bills.map(x => {
-        payments.push(x)
+    bills.map(bill => {
+        payments.push(bill)
 
         let tr = document.createElement('tr')
         let tdID = document.createElement('td')
@@ -19,11 +19,11 @@ async function downloadAndDisplay(){
         let tdDate = document.createElement('td')
         let tdActions = document.createElement('td')
 
-        tdID.innerHTML =  x.id
-        tdName.innerHTML = x.name
-        tdAmountNumber.innerHTML = x.amountNumber
-        tdAmountText.innerHTML = x.amountText
-        tdDate.innerHTML = x.date
+        tdID.innerHTML =  bill.id
+        tdName.innerHTML = bill.payerName
+        tdAmountNumber.innerHTML = bill.amountNum
+        tdAmountText.innerHTML = bill.amountTxt
+        tdDate.innerHTML = bill.date
 
         tr.appendChild(tdID)
         tr.appendChild(tdName)
@@ -38,7 +38,7 @@ async function downloadAndDisplay(){
         btnUpdate.classList.add('btn-warning')
         btnUpdate.classList.add('mx-2')
         btnUpdate.innerHTML = 'Update'
-        btnUpdate.idParameter = x.id
+        btnUpdate.idParameter = bill.id
         btnUpdate.addEventListener('click', updateLog)
         tdActions.appendChild(btnUpdate)
 
@@ -48,7 +48,7 @@ async function downloadAndDisplay(){
         btnDel.classList.add('btn-danger')
         btnDel.classList.add('mx-2')
         btnDel.innerHTML = 'Delete'
-        btnDel.idParameter = x.id
+        btnDel.idParameter = bill.id
         btnDel.addEventListener('click', deleteLog)
         tdActions.appendChild(btnDel)
 
@@ -106,6 +106,7 @@ function addTemp(){
 }
 
 function createBill(){
+    let id = document.querySelector('#create-bill-id').value
     let payername = document.querySelector('#create-payername').value
     let amountnum = document.querySelector('#create-amount-num').value
     let amounttext = document.querySelector('#create-amount-txt').value
@@ -117,9 +118,10 @@ function createBill(){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            name: payername,
-            amountNumber: parseInt(amountnum),
-            amountText: amounttext,
+            id: parseInt(id),
+            payername: payername,
+            amountNum: parseInt(amountnum),
+            amountTxt: amounttext,
             date: billdate
         })
     })
@@ -148,9 +150,9 @@ function updateBill(){
         },
         body: JSON.stringify({
             id: billid,
-            name: payername,
-            amountNumber: amountnum,
-            amountText: amounttext,
+            payername: payername,
+            amountNum: parseInt(amountnum),
+            amountTxt: amounttext,
             date: billdate
         })
     })
