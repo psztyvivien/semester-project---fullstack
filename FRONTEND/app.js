@@ -23,7 +23,11 @@ async function downloadAndDisplay(){
         tdName.innerHTML = bill.payerName
         tdAmountNumber.innerHTML = bill.amountNum
         tdAmountText.innerHTML = bill.amountTxt
-        tdDate.innerHTML = bill.date
+        tdDate.innerHTML = new Date(bill.date).toLocaleDateString('hu-HU', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
 
         tr.appendChild(tdID)
         tr.appendChild(tdName)
