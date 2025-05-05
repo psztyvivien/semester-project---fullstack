@@ -51,7 +51,7 @@ async function downloadAndDisplay(){
         btnUpdate.classList.add('btn-sm')
         btnUpdate.classList.add('btn-warning')
         btnUpdate.classList.add('mx-2')
-        btnUpdate.innerHTML = 'Update'
+        btnUpdate.innerHTML = 'Frissít'
         btnUpdate.idParameter = bill.id
         btnUpdate.addEventListener('click', updateLog)
         tdActions.appendChild(btnUpdate)
@@ -60,7 +60,7 @@ async function downloadAndDisplay(){
         btnDel.classList.add('btn-sm')
         btnDel.classList.add('btn-danger')
         btnDel.classList.add('mx-2')
-        btnDel.innerHTML = 'Delete'
+        btnDel.innerHTML = 'Törlés'
         btnDel.idParameter = bill.id
         btnDel.addEventListener('click', deleteLog)
         tdActions.appendChild(btnDel)
@@ -149,7 +149,7 @@ function createBill(){
     })
     .catch(err => {
         console.error('Error: r ', err)
-        alert('Sikertelen mentés!')
+        alert('Sikertelen létrehozás!')
     })
 }
 
