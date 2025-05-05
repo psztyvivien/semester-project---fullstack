@@ -1,7 +1,7 @@
-const payments = [];
+let payments = [];
 
 async function downloadAndDisplay(){
-    const response = await fetch('http://localhost:5121/billapi')
+    const response = await fetch('http://localhost:5121/bill')
     const bills = await response.json()
     console.log(bills)
 
@@ -73,7 +73,7 @@ function updateLog(event) {
 function deleteLog(event) {
     console.log(event.target.idParameter)
 
-    fetch('http://localhost:5121/billapi' + event.target.idParameter, {
+    fetch('http://localhost:5121/bill' + event.target.idParameter, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -111,14 +111,14 @@ function createBill(){
     let amounttext = document.querySelector('#create-amount-txt').value
     let billdate = document.querySelector('#create-bill-date').value
 
-    fetch('http://localhost:5121/billapi', {
+    fetch('http://localhost:5121/bill', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             name: payername,
-            amountNumber: amountnum,
+            amountNumber: parseInt(amountnum),
             amountText: amounttext,
             date: billdate
         })
