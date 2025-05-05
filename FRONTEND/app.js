@@ -67,11 +67,12 @@ function updateLog(event) {
     let toUpdate = payments.find(x => x.id === event.target.idParameter)
 
     document.querySelector('#bill-id').value = toUpdate.id
-    document.querySelector('#payername').value = toUpdate.name
-    document.querySelector('#amount-num').value = toUpdate.amountNumber
-    document.querySelector('#amount-txt').value = toUpdate.amountText
-    document.querySelector('#bill-date').value = toUpdate.date
+    document.querySelector('#payername').value = toUpdate.payerName
+    document.querySelector('#amount-num').value = toUpdate.amountNum
+    document.querySelector('#amount-txt').value = toUpdate.amountTxt
+    document.querySelector('#bill-date').value = toUpdate.date.split('T')[0]
 
+    console.log(toUpdate)
 }
 
 function deleteLog(event) {
@@ -147,13 +148,13 @@ function updateBill(){
     let amounttext = document.querySelector('#amount-txt').value
     let billdate = document.querySelector('#bill-date').value
 
-    fetch('http://localhost:5121/billapi' + billid, {
+    fetch('http://localhost:5121/bill/' + billid, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: billid,
+            id: parseInt(billid),
             payername: payername,
             amountNum: parseInt(amountnum),
             amountTxt: amounttext,
