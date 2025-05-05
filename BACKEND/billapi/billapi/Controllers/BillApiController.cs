@@ -32,7 +32,7 @@ namespace billapi.Controllers
             this.repo.Create(bill);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public void EditBill([FromBody] Bill bill)
         {
             this.repo.Update(bill);

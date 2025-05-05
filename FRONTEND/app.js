@@ -1,7 +1,7 @@
 const payments = [];
 
-async function donwloadAndDisplay(){
-    const response = await fetch('http://localhost:5500/billapi')
+async function downloadAndDisplay(){
+    const response = await fetch('http://localhost:5121/billapi')
     const bills = await response.json()
     console.log(bills)
 
@@ -12,6 +12,7 @@ async function donwloadAndDisplay(){
         payments.push(x)
 
         let tr = document.createElement('tr')
+        let tdID = document.createElement('td')
         let tdName = document.createElement('td')
         let tdAmountNumber = document.createElement('td')
         let tdAmountText = document.createElement('td')
@@ -64,7 +65,7 @@ function updateLog(event) {
     document.querySelector('#bill-id').value = toUpdate.id
     document.querySelector('#payername').value = toUpdate.name
     document.querySelector('#amount-num').value = toUpdate.amountNumber
-    document.querySelector('#amount-text').value = toUpdate.amountText
+    document.querySelector('#amount-txt').value = toUpdate.amountText
     document.querySelector('#bill-date').value = toUpdate.date
 
 }
@@ -72,7 +73,7 @@ function updateLog(event) {
 function deleteLog(event) {
     console.log(event.target.idParameter)
 
-    fetch('http://localhost:5500/billapi/' + event.target.idParameter, {
+    fetch('http://localhost:5121/billapi' + event.target.idParameter, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -99,8 +100,8 @@ function reset(){
 function addTemp(){
     document.querySelector('#bill-id').value = '3'
     document.querySelector('#payername').value = 'Test Payer'
-    document.querySelector('#amount-num').value = '12000'
-    document.querySelector('#amount-txt').value = 'tizenkettő ezer'
+    document.querySelector('#amount-num').value = '2000'
+    document.querySelector('#amount-txt').value = 'kettő ezer'
     document.querySelector('#bill-date').value = '2023-10-01'
 }
 
@@ -110,7 +111,7 @@ function createBill(){
     let amounttext = document.querySelector('#create-amount-txt').value
     let billdate = document.querySelector('#create-bill-date').value
 
-    fetch('http://localhost:5500/billapi', {
+    fetch('http://localhost:5121/billapi', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -140,7 +141,7 @@ function updateBill(){
     let amounttext = document.querySelector('#amount-txt').value
     let billdate = document.querySelector('#bill-date').value
 
-    fetch('http://localhost:5500/billapi/' + billid, {
+    fetch('http://localhost:5121/billapi' + billid, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -169,33 +170,81 @@ downloadAndDisplay()
 
 
 
-// Egyszerű szövegből számra konvertáló (magyar)
-function convertTextToNumber(text) {
-    const szavak = {
-        'egy': 1, 'kettő': 2, 'két': 2, 'három': 3, 'négy': 4, 'öt': 5,
-        'hat': 6, 'hét': 7, 'nyolc': 8, 'kilenc': 9, 'tíz': 10,
-        'tizenegy': 11, 'tizenkettő': 12, 'tizenhárom': 13, 'tizennégy': 14,
-        'tizenöt': 15, 'tizenhat': 16, 'tizenhét': 17, 'tizennyolc': 18, 'tizenkilenc': 19,
-        'húsz': 20, 'harminc': 30, 'negyven': 40, 'ötven': 50, 'hatvan': 60,
-        'hetven': 70, 'nyolcvan': 80, 'kilencven': 90, 'száz': 100, 'ezer': 1000
+function magyarSzovegSzamra(szoveg) {
+    const szamok = {
+        'nulla': 0, 'egy': 1, 'kettő': 2, 'két': 2, 'három': 3, 'négy': 4,
+        'öt': 5, 'hat': 6, 'hét': 7, 'nyolc': 8, 'kilenc': 9,
+        'tíz': 10, 'tizen': 10, 'húsz': 20, 'huszon': 20,
+        'száz': 100, 'ezer': 1000
     };
 
-    if (!text) return 0;
+    let maradek = szoveg.toLowerCase().replace(/[-\s]/g, '');
 
-    let total = 0;
+    let osszeg = 0;
 
-    if (text.includes('ezer')) {
-        const parts = text.split('ezer');
-        const ezres = convertTextToNumber(parts[0]);
-        const maradek = convertTextToNumber(parts[1] || '');
-        return ezres * 1000 + maradek;
+    function kivesz(prefix) {
+        if (maradek.startsWith(prefix)) {
+            maradek = maradek.slice(prefix.length);
+            return true;
+        }
+        return false;
     }
 
-    for (let [szo, ertek] of Object.entries(szavak)) {
-        if (text.startsWith(szo)) {
-            return ertek + convertTextToNumber(text.slice(szo.length));
+    // Ezerest vizsgál
+    let ezres = 0;
+    for (let [k, v] of Object.entries(szamok)) {
+        if (kivesz(k + 'ezer')) {
+            ezres = v * 1000;
+            break;
+        }
+    }
+    if (kivesz('ezer')) ezres = 1000;
+
+    // Százas rész
+    let szazas = 0;
+    for (let [k, v] of Object.entries(szamok)) {
+        if (kivesz(k + 'száz')) {
+            szazas = v * 100;
+            break;
+        }
+    }
+    if (kivesz('száz')) szazas = 100;
+
+    // Tízes + egyes kombinációk (pl. tizennégy, huszonhárom)
+    let tizes = 0;
+    if (kivesz('tizen')) tizes = 10;
+    else if (kivesz('huszon')) tizes = 20;
+    else {
+        for (let [k, v] of Object.entries(szamok)) {
+            if (kivesz(k + 'ven')) {
+                tizes = v * 10;
+                break;
+            }
         }
     }
 
-    return 0;
+    // Egyes
+    let egyes = 0;
+    for (let [k, v] of Object.entries(szamok)) {
+        if (maradek.startsWith(k)) {
+            egyes = v;
+            maradek = maradek.slice(k.length);
+            break;
+        }
+    }
+
+    osszeg = ezres + szazas + tizes + egyes;
+    return osszeg;
+}
+
+function checkAmount() {
+    const num = parseInt(document.getElementById('create-amount-num').value);
+    const txt = document.getElementById('create-amount-txt').value;
+    const parsed = magyarSzovegSzamra(txt);
+
+    if (num === parsed) {
+        alert("Az összegek egyeznek.");
+    } else {
+        alert(`Az összeg nem egyezik! Szöveg alapján: ${parsed}, számként megadva: ${num}`);
+    }
 }
