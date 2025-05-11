@@ -111,11 +111,11 @@ function reset(){
 }
 
 function addTemp(){
-    document.querySelector('#bill-id').value = '3'
-    document.querySelector('#payername').value = 'Test Payer'
-    document.querySelector('#amount-num').value = '2000'
-    document.querySelector('#amount-txt').value = 'kettő ezer'
-    document.querySelector('#bill-date').value = '2023-10-01'
+    document.querySelector('#create-bill-id').value = '3'
+    document.querySelector('#create-payername').value = 'Teszt befizető'
+    document.querySelector('#create-amount-num').value = '12000'
+    document.querySelector('#create-amount-txt').value = 'tizenkétezer'
+    document.querySelector('#create-bill-date').value = '2025-05-01'
 }
 
 function createBill(){
